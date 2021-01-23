@@ -1,0 +1,12 @@
+# 为什么说 Low Code 是行业毒瘤
+原视频出处 [https://www.bilibili.com/video/BV1vf4y1B7ne](https://www.bilibili.com/video/BV1vf4y1B7ne)
+
+今天讲一下 Low Code Platform ,很多人问我，你对低代码平台到底什么看法。我就是很多年都没有变过，我对 Low Code 的认识是，这是行业毒瘤。它没有任何未来，不值得我们任何的投资和想法。
+
+我们历史上曾经一次一次的的出现过了 Low Code, 我个人认为，这个叫做软件开发的一个圣杯，圣杯是什么呢，是让不懂软件开发的人可以写代码。过去40年内，我们做过一次又一次的努力。另外一个角度上来讲，我们可以通过形式逻辑来证明说，这个想法本身就是错误的，而且错的非常非常离谱，因为当你去讲 Low Code Environment 的时候，我在一段功能上对它进行 Customization，然后你讲是说我做 Customization 这些人，他没有对代码的这些理解，换句话来讲就是他不会去理解某一个计算模型，无论是[图灵机](https://en.wikipedia.org/wiki/Turing_machine)，无论是 [Lambda calculation](https://en.wikipedia.org/wiki/Scheme_(programming_language)#Lambda_calculus),无论是[霍恩子句](https://en.wikipedia.org/wiki/Horn_clause)，他没有任何一个理解，但是他可以定制一个代码。
+
+那么这样就会面临一个问题，就是你能`提供的能力`和你本身对`人员素质的要求`，这是一个矛盾的事情。通过[丘奇-图灵论题](https://en.wikipedia.org/wiki/Church%E2%80%93Turing_thesis)，已经证明了所有计算模型之间都是等价，没有任何一个模型可以跨越另一个模型提供额外的能力。换句话讲，如果你想要百分之百去解决领域里面的问题，无论你提供的是`DSL图形编辑界面`或者任何界面也好，它必定是[图灵完备](https://en.wikipedia.org/wiki/Turing_completeness)，那么能够掌握图灵完备的人必定是程序员。如果说你的代码不是图灵完备的，那么必定有一些功能你实现不了。你的功能的完备性和你对人员的要求已经把你框死在一个模型当中。[丘奇-图灵论题](https://en.wikipedia.org/wiki/Church%E2%80%93Turing_thesis)证明没有任何一个办法可以让不理解程序的人可以得到程序员的自主度。但这恰恰是 Low Code 向你承诺了，我有一堆人不懂代码开发，但是可以达到程序员的自主度。这个在数学上已经证明的事情是`没有未来可言`的。
+
+`Low Code` 在历史上已经不是第一次出现了。第一个出现的 `Low Code Environment` 是在今天我们认为是程序员必备技能的 `SQL(结构化查询语言)`，在当时的想法是，我有数据库和数据，然后教会这些分析人员一个非图灵完备的一种语言，他们可以去生成自己想要的报表，从而可以支撑业务的需求。但你会发现今天掌握`SQL`的非程序员几乎为0。之后还有一个叫做4GL,就是第四代编程语言，这门语言希望屏蔽一些细节问题，让非程序员达到程序员这样的效能和效果，同样的面临一个问题，你想要达到[图灵完备](https://en.wikipedia.org/wiki/Turing_completeness)，你想要达到程序员的百分之百的效率，你就必须是[图灵完备](https://en.wikipedia.org/wiki/Turing_completeness)的。如果你是[图灵完备](https://en.wikipedia.org/wiki/Turing_completeness)的,那这个语言本身的内部复杂度，你是不能够被屏蔽掉，所以`4GL`失败了。当时4GL代表是[prolog](https://en.wikipedia.org/wiki/Prolog)以[霍恩子句](https://en.wikipedia.org/wiki/Horn_clause)作为一种新的编程模型去处理的，最终碰到了[NP完全问题](https://en.wikipedia.org/wiki/NP-completeness)，然后变成了我写的程序我不知道它花多长时间能够预计完成，所以这时候你会发现提倡 `Low Code` 的人他没有理解本质上来讲，这是不兼容的两件事情。你无法同时满足既是[图灵完备](https://en.wikipedia.org/wiki/Turing_completeness)且对于开发的人他又不需要去完全掌握编程技能，这两件事情是不可能同时兼得的。
+
+那么你说：“我们能不能编程一个 `niche market`,就是对一些代码进行一些简单定制，可以去满足我这个需求，那我的反问是：“你为什么不能写成有一系列定制需求的 `SaaS` 呢？”。如此说来，现在对于软件开发和软件编程的理解，我们可以通过 `SaaS` 去解决很多 `Low Code` 平台的场景。而且目前市面上已经有一些 `Saas` 和 `定制开关` 的一些实现。真正对于 `Low Code` 的生存空间已经变的非常狭小了。所以，所有鼓吹 `Low Code` 平台是未来方向的，都没有理解这个问题的本质。长远来看任何鼓吹 `Low Code Platform` 的行为都是 `行业毒瘤`。
