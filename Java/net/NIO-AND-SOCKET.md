@@ -56,4 +56,27 @@ socketChannel.read(buf, 0, 1024);
 
 //读取多个ByteBuffer空间大小的数据。
 socketChannel.read(buffers);    
-    ```
+```
+
+#### **1.3** 写入SocketChannel
+> 使用write方法写入ByteBuffer
+```java
+
+SocketChannel socketChannel = SocketChannel.open();
+
+String data = "Hello World!";
+ByteBuffer buf = ByteBuffer.allocate(100);
+buf.put(data.getBytes());
+
+// flip重置当前buffer的标记位置（mark = -1)
+// flip重置当前buffer的limit为当前buffer写入的字节数（limit=position)，并将当前写入指针position设置为0
+buf.flip();
+
+// hasRemaining方法是判断当前buffer的数据是否读取完毕。
+while(buf.hasRemaining()){
+    socketChannel.write(buf);
+}
+
+```
+
+#### **1.4** 非阻塞模式
