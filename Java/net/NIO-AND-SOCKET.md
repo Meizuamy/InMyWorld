@@ -1,10 +1,10 @@
-## NIO
+# NIO
 
-### **1.** SockerChannel
+## **1.** SockerChannel
 
 SocketChannel 是一个连接到TCP网络套接字（Socket）的通道。
 
-#### **1.1** 创建SocketChannel的两种方式
+### **1.1** 创建SocketChannel的两种方式
 1. 打开一个SocketChannel并连接到互联网上的某台服务器。
 
 > 打开SocketChannel
@@ -36,7 +36,7 @@ while(true){
 ```
 
 
-#### **1.2** 从SocketChannel中读取数据
+### **1.2** 从SocketChannel中读取数据
 
 > 使用ByteBuffer申请内存，使用read()读取返回的数据。
 
@@ -58,7 +58,7 @@ socketChannel.read(buf, 0, 1024);
 socketChannel.read(buffers);    
 ```
 
-#### **1.3** 写入SocketChannel
+### **1.3** 写入SocketChannel
 > 使用write方法写入ByteBuffer
 ```java
 
@@ -79,4 +79,52 @@ while(buf.hasRemaining()){
 
 ```
 
-#### **1.4** 非阻塞模式
+### **1.4** 非阻塞模式
+
+> 可以设置SocketChannel为非阻塞模式（non-blocking mode），设置之后，就可以在异步模式下调用connect(),write(),read()
+
+```java
+
+SocketChannel socketChannel = SocketChannel.open();
+
+socketChannel.configureBlocking(false);
+socketChannel.connect(new InetSocketAddress("127.0.0.1",8080));
+
+```
+#### 1.4.1 connect()
+
+> 如果SocketChannel在非阻塞模式下，此时调用connect(), 该方法可能在链接建立之前就返回了。为了确定是否建立了链接，可以调用finishConnect()的方法来确定。
+
+```java
+SocketChannel socketChannel = SocketChannel.open();
+socketChannel.configureBlocking(false);
+socketChannel.connect(new InetSocketAddress("127.0.0.1",8080));
+
+while(!socketChannel.finishConnect()){
+    // wait, or do something else..
+}
+```
+#### 1.4.2 write()
+
+> 非阻塞模式下，write()方法在尚未写出任何内容时可能就返回了。所以需要在循环中调用write()。
+
+```java
+String data = "Hello World!";
+SocketChannel socketChannel = SocketChannel.open();
+ByteBuffer buf = ByteBuffer.allocate(100);
+buf.clear();
+buf.put(data.getBytes());
+buf.flip();
+
+while(buf.hasRemaining()){
+    socketChannel.write(buf);
+}
+
+```
+
+#### 1.4.3 read()
+
+> 非阻塞模式下，read()方法在尚未读取到任何数据时可能就返回了。所以要关注它的int返回值，它会告诉你当前读取了多少字节。
+
+
+总结：非阻塞模式与选择器搭配会工作的更好，通过将一个或多个SocketChannel注册到Selector，可以询问Selector哪个通道准备好了读取，写入等。
