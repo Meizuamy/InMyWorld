@@ -1,10 +1,25 @@
 # NIO
 
-## **1.** SockerChannel
+
+## **1.** Channel
+> Java 的NIO通道和流类似，但又不同
+> 
+> * 既可以读取通道中的数据，又可以写数据到通道中，但流是单向的。
+> * 通道可以异步的读写。
+> * 通道中的数据总是要读取一个Buffer，或者从Buffer写入。
+
+### **1.1** Channel的实现
+* FileChannel - 从文件中读写数据
+* DatagramChannel - 通过UDP读写网络中的数据
+* SocketChannel - 通过TCP读写网络中的数据
+* ServerSocketChannel - 监听新进来的TCP链接，对每一个新进来的链接，都会创建一个SocketChannel
+
+
+## **2.** SockerChannel
 
 SocketChannel 是一个连接到TCP网络套接字（Socket）的通道。
 
-### **1.1** 创建SocketChannel的两种方式
+### **2.1** 创建SocketChannel的两种方式
 1. 打开一个SocketChannel并连接到互联网上的某台服务器。
 
 > 打开SocketChannel
@@ -36,7 +51,7 @@ while(true){
 ```
 
 
-### **1.2** 从SocketChannel中读取数据
+### **2.2** 从SocketChannel中读取数据
 
 > 使用ByteBuffer申请内存，使用read()读取返回的数据。
 
@@ -58,7 +73,7 @@ socketChannel.read(buf, 0, 1024);
 socketChannel.read(buffers);    
 ```
 
-### **1.3** 写入SocketChannel
+### **2.3** 写入SocketChannel
 > 使用write方法写入ByteBuffer
 ```java
 
@@ -79,7 +94,7 @@ while(buf.hasRemaining()){
 
 ```
 
-### **1.4** 非阻塞模式
+### **2.4** 非阻塞模式
 
 > 可以设置SocketChannel为非阻塞模式（non-blocking mode），设置之后，就可以在异步模式下调用connect(),write(),read()
 
@@ -91,7 +106,7 @@ socketChannel.configureBlocking(false);
 socketChannel.connect(new InetSocketAddress("127.0.0.1",8080));
 
 ```
-#### 1.4.1 connect()
+#### 2.4.1 connect()
 
 > 如果SocketChannel在非阻塞模式下，此时调用connect(), 该方法可能在链接建立之前就返回了。为了确定是否建立了链接，可以调用finishConnect()的方法来确定。
 
@@ -104,7 +119,7 @@ while(!socketChannel.finishConnect()){
     // wait, or do something else..
 }
 ```
-#### 1.4.2 write()
+#### 2.4.2 write()
 
 > 非阻塞模式下，write()方法在尚未写出任何内容时可能就返回了。所以需要在循环中调用write()。
 
@@ -122,9 +137,87 @@ while(buf.hasRemaining()){
 
 ```
 
-#### 1.4.3 read()
+#### 2.4.3 read()
 
 > 非阻塞模式下，read()方法在尚未读取到任何数据时可能就返回了。所以要关注它的int返回值，它会告诉你当前读取了多少字节。
 
 
 总结：非阻塞模式与选择器搭配会工作的更好，通过将一个或多个SocketChannel注册到Selector，可以询问Selector哪个通道准备好了读取，写入等。
+
+
+## **3.** ServerSocketChannel
+
+
+
+
+## **4.** FileChannel
+
+> 基本的FileChannel实例
+
+```java
+RandomAccessFile file = new RandomAccessFile("data/nio-data.txt","rw");
+FileChannel inChannel = file.getChannel();
+ByteBuffer buf = ByteBuffer.allocate(48);
+
+while(inChannel.read(buf) != -1){
+    System.out.println("Read" + byteRead);
+    buf.flip();
+
+    while(buf.hasRemaining()){
+        System.out.print((char) buf.get());
+    }
+
+    buf.clear();
+}
+
+file.close();
+
+```
+
+## **1.5** DatagramChannel
+> Java NIO 中的DatagramChannel 是一个能收发UDP包的通道。因为UDP是无连接的网络协议，所以不能像其他通道那样读取和写入。它发送的是数据包。
+
+### **1.5.1** 打开DatagramChannel
+> 下面是一个打开DatagramChannel的简单例子
+
+```java
+DatagramChannel channel = DatagramChannel.open();
+channel.socket().bind(new InetSocketAddress(9999));
+```
+
+### **1.5.2** 接收数据
+
+> 可以通过 receive() 方法接收数据
+
+```java
+DatagramChannel channel = DatagramChannel.open();
+channel.socket().bind(new InetSocketAddress(9999));
+ByteBuffer buf = ByteBuffer.allocate(48);
+buf.clear();
+channel.receive(buf);
+```
+### **1.5.2** 发送数据
+
+> 通过send()方法从DatagramChannel发送数据。
+
+```java
+DatagramChannel channel = DatagramChannel.open();
+String data = "Hello World!";
+ByteBuffer buf = ByteBuffer.allocate(48);
+buf.clear();
+buf.put(data.getBytes());
+buf.flip();
+channel.send(buf, new InetSocketAddress("127.0.0.1",9999));
+```
+
+### **1.5.3** 链接到特定的地址
+> 可以将DatagramChannel "链接" 到网络的特定地址。由于UDP是无连接的，链接到特定地址并不会像TCP那样创建一个真正的链接。而是锁住DatagramChannel，让其只能从特定的地址收发数据。
+
+```java
+DatagramChannel channel = DatagramChannel.open();
+channel.connect(new InetSocketAddress("127.0.0.1",9999));
+ByteBuffer buf = ByteBuffer.allocate(48);
+int bytesRead = channel.read(buf);
+int bytesWritten = channel.write(buf);
+```
+
