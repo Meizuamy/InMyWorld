@@ -394,3 +394,91 @@ while(true){
     }
 }
 ```
+
+### Pipe
+
+Java NIO 管道是一个线程之间的单向数据连接。Pipe有一个source通道和一个sink通道。数据会被写到sink通道，从source通道读取。
+
+#### 创建管道
+通过Pipe.open()方法打开管道。例如：
+```java
+Pipe pipe = Pipe.open();
+```
+
+#### 向管道写数据
+要向管道写数据，需要访问sink通道。像这样：
+```java
+Pipe.SinkChannel sinkCHannel = pipe.sink();
+```
+
+通过调用SinkChannel的write()方法，将数据写入SinkChannel，像这样:
+```java
+String newData = "New String to write to file..." + System.currentTimeMillis();
+ByteBuffer buf = ByteBuffer.allocate(48);
+buf.clear();
+buf.put(newData.getBytes());
+
+buf.flip();
+
+while(buf.hasRemaining()){
+    sinkChannel.write(buf);
+}
+```
+
+#### 从管道读取数据
+
+通过source通道读取管道中的数据
+```java
+
+Pipe.SourceChannel sourceChannel = pipe.source();
+
+```
+
+调用source通道的read()方法来读取数据
+```java
+ByteBuffer buf = ByteBuffer.allocate(48);
+int bytesRead = sourceChannel.read(buf);
+```
+read()方法返回的int值会告诉我们多少字节被读进了缓冲区。
+
+
+### Path
+
+Java的Path接口时Java NIO2的一部分，是对Java6和Java7的NIO的更新。Java的Path接口在Java7中被添加到Java NIO，位于java.nio.file包中，其全路径是java.nio.file.Path。
+
+一个Path实例代表一个文件系统中的路径。一个路径可以指向一个文件或者一个文件夹。一个路径可以是绝对路径或相对路径。绝对路径是从根路径开始的全路径，相对路径是一个相对于其他路径的文件或者文件夹路径。
+
+在很多地方java.nio.file.Path接口和java.io.File类是相似的，但是他们还是有很多不同的。在很多类中，你可以使用很多Path接口替代File类。
+
+#### 创建一个Path实例
+想要使用一个Path实例，你必须要先创建一个Path实例，可以使用Paths类中的静态方法Paths.get()创建。注意，使用get()方法是默认会解析`.`和`..`
+```java
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+public class FileExample {
+
+    public static void main(String[] args){
+        Path path = Paths.get("c:\\data\\myfile.txt");
+    }
+    
+}
+
+```
+
+通常创建相对路径的Path我们可以使用Paths.get(basePath, relativePath)方法创建一个相对路径的实例。
+
+#### Path.normalize()方法
+Path接口中的normalize()可以标准化一个路径。标准化意思是解析路径中的`.`和`..`。
+```java
+
+String originalPath = "d:\\data\\projects\\a-project\\..\\another-project";
+
+Path path = Paths.get(origianlPath);
+System.out.println("path = " + path);
+
+Path normalizePath = path.normalize();
+
+System.out.println("normalizePath = " + normalizePath);
+
+```
