@@ -482,3 +482,56 @@ Path normalizePath = path.normalize();
 System.out.println("normalizePath = " + normalizePath);
 
 ```
+
+## 通道间的数据传输
+
+在java nio中如果两个通道有一个是FileChannel，那你可以直接将数据从一个channel传输到另外一个channel。
+
+
+### transferFrom()
+
+FileChannel的transferFrom()方法可以将数据从原通道传输到FileChannel中，如下面的示例：
+```java
+RandomAccessFile fromFile = new RandomAccessFile("fromFile.txt","rw");
+FileChannel fromChannel = fromFile.getChennel();
+
+RandomAccessFile toFile = new RandomAccessFile("toFile.txt","rw");
+FileChannel toChannel = toFile.getChannel();
+
+long position = 0;
+long count = fromChannel.size();
+
+toChannel.transferFrom(position, count, fromChannel);
+```
+
+方法的参数：
+
+position，表示从position处开始向目标文件写入数据。
+count，表示最多传输的字节数。如果源通道的剩余空间小于count个字节，则所传输的字节数要小于请求的字节数。
+fromChannel，字节源
+
+> **注意**
+> 在SocketChannel的实现中，SocketChannel只会传输此刻准备好的数据（可能不足count字节）。因此，SocketChannel可能不会将请求的所有数据（count个字节）全部传输到FileChannel中。
+
+
+### transferTo()
+
+transferTo方法将数据从一个FileChannel传输到其他的channel中。
+
+一个简答的例子：
+
+```java
+RandomAccessFile fromFile = new RandomAccessFile("fromFile.txt", "rw");
+FileChannel fromChannel = fromFile.getChannel();
+
+RandomAccessFile toFile = new RandomAccessFile("toFile.txt", "rw");
+FileChannel toChannel = toFile.getChannel();
+
+long position = 0;
+long count = fromChannel.size();
+
+fromChannel.transferTo(position, count, toChannel);
+
+```
+
+如上所说的关于SocketChannel的问题，在transferTo()方法中同样存在。SocketChannel会一致传输到数据直到目标buffer被填满。
